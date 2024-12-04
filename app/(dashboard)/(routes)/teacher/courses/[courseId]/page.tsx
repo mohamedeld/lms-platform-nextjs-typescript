@@ -1,5 +1,6 @@
 import DescriptionForm from "@/components/DescriptionForm";
 import IconBade from "@/components/IconBade";
+import ImageForm from "@/components/ImageForm";
 import TitleForm from "@/components/TitleForm";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
@@ -57,6 +58,7 @@ const CourseDetailsPage = async ({params}:CourseDetailsProps) => {
           </div>
           <TitleForm initialData={course}/>
           <DescriptionForm initialData={course}/>
+          <ImageForm initialData={course}/>
         </div>
       </div>
     </div>
