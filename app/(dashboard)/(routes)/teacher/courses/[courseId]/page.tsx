@@ -1,3 +1,4 @@
+import DescriptionForm from "@/components/DescriptionForm";
 import IconBade from "@/components/IconBade";
 import TitleForm from "@/components/TitleForm";
 import { db } from "@/lib/db";
@@ -55,6 +56,7 @@ const CourseDetailsPage = async ({params}:CourseDetailsProps) => {
             <h2 className="text-xl">Customize your course</h2>
           </div>
           <TitleForm initialData={course}/>
+          <DescriptionForm initialData={course}/>
         </div>
       </div>
     </div>
