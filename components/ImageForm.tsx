@@ -5,14 +5,12 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import * as z from "zod";
 import { Button } from "./ui/button";
-import { ImageIcon, Pencil, PencilIcon, PlusCircle } from "lucide-react";
+import { ImageIcon, Pencil, PlusCircle } from "lucide-react";
 import { useState } from "react";
-import { Form, FormControl, FormField, FormItem } from "./ui/form";
-import { Input } from "./ui/input";
+
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { Textarea } from "./ui/textarea";
+
 import { Course } from "@prisma/client";
 import Image from "next/image";
 import UploadFile from "./UploadFile";
