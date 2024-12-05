@@ -1,10 +1,13 @@
+import AttachmentForm from "@/components/AttachmentForm";
+import CategoryForm from "@/components/CategoryForm";
 import DescriptionForm from "@/components/DescriptionForm";
 import IconBade from "@/components/IconBade";
 import ImageForm from "@/components/ImageForm";
+import PriceForm from "@/components/PriceForm";
 import TitleForm from "@/components/TitleForm";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
-import { LayoutDashboard } from "lucide-react";
+import { CircleDollarSign, File, LayoutDashboard, ListChecks } from "lucide-react";
 import { redirect } from "next/navigation";
 
 type CourseDetailsProps = {
@@ -23,6 +26,13 @@ const CourseDetailsPage = async ({params}:CourseDetailsProps) => {
     where:{
       id:courseId,
       userId
+    },
+    include:{
+      attachments:{
+        orderBy:{
+          createdAt:'desc'
+        }
+      }
     }
   })
   if(!course){
@@ -64,6 +74,37 @@ const CourseDetailsPage = async ({params}:CourseDetailsProps) => {
           <TitleForm initialData={course}/>
           <DescriptionForm initialData={course}/>
           <ImageForm initialData={course}/>
+          <CategoryForm initialData={course} options={
+            categories?.map(category=>({
+              label:category?.name,
+              value:category?.id,
+            }))
+          }/>
+        </div>
+        <div className="space-y-6">
+          <div>
+            <div className="flex items-center gap-x-2">
+              <IconBade icon={ListChecks}/>
+              <h2 className="text-xl">Course Chapters</h2>
+            </div>
+            <div>
+              TODO Chapters
+            </div>
+          </div>
+          <div>
+            <div className="flex items-center gap-x-2">
+              <IconBade icon={CircleDollarSign}/>
+              <h2 className="text-xl">Sell your course</h2>
+            </div>
+            <PriceForm initialData={course}/>
+          </div>
+          <div>
+          <div className="flex items-center gap-x-2">
+              <IconBade icon={File}/>
+              <h2 className="text-xl">Resources & Attachments</h2>
+            </div>
+            <AttachmentForm initialData={course}/>
+          </div>
         </div>
       </div>
     </div>
