@@ -65,7 +65,7 @@ const CourseDetailsPage = async ({params}:CourseDetailsProps) => {
 
         </div>  
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16 ">
         <div>
           <div className="flex items-center gap-x-2">
             <IconBade icon={LayoutDashboard}/>
@@ -87,9 +87,7 @@ const CourseDetailsPage = async ({params}:CourseDetailsProps) => {
               <IconBade icon={ListChecks}/>
               <h2 className="text-xl">Course Chapters</h2>
             </div>
-            <div>
-              TODO Chapters
-            </div>
+            <DescriptionForm initialData={course}/>
           </div>
           <div>
             <div className="flex items-center gap-x-2">
