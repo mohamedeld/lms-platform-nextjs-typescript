@@ -1,5 +1,6 @@
 import AttachmentForm from "@/components/AttachmentForm";
 import CategoryForm from "@/components/CategoryForm";
+import ChapterForm from "@/components/ChapterForm";
 import DescriptionForm from "@/components/DescriptionForm";
 import IconBade from "@/components/IconBade";
 import ImageForm from "@/components/ImageForm";
@@ -28,6 +29,11 @@ const CourseDetailsPage = async ({params}:CourseDetailsProps) => {
       userId
     },
     include:{
+      Chapter:{
+        orderBy:{
+          position:'asc'
+        }
+      },
       attachments:{
         orderBy:{
           createdAt:'desc'
@@ -49,7 +55,8 @@ const CourseDetailsPage = async ({params}:CourseDetailsProps) => {
     course?.description,
     course?.imageUrl,
     course?.price,
-    course?.categoryId
+    course?.categoryId,
+    course?.Chapter?.some(chapter=> chapter?.isPublished)
   ]
   const totalFields = requiredFields?.length;
   const completedFields = requiredFields?.filter(Boolean)?.length;
@@ -87,7 +94,7 @@ const CourseDetailsPage = async ({params}:CourseDetailsProps) => {
               <IconBade icon={ListChecks}/>
               <h2 className="text-xl">Course Chapters</h2>
             </div>
-            <DescriptionForm initialData={course}/>
+            <ChapterForm initialData={course}/>
           </div>
           <div>
             <div className="flex items-center gap-x-2">

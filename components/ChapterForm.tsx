@@ -13,17 +13,15 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Textarea } from "./ui/textarea";
+import { Course } from "@prisma/client";
 
 
 interface ChapterFormProps  {
-  initialData:{
-    description:string|null;
-    id:string;
-}
+  initialData:Course
 }
 const formSchema = z.object({
-  description:z.string().min(1,{
-    message:"description is required"
+  Chapter:z.string().min(1,{
+    message:"chapter title is required"
   })
 });
 
@@ -32,10 +30,7 @@ const ChapterForm = ({initialData:course} :ChapterFormProps) => {
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver:zodResolver(formSchema),
-    defaultValues:{
-      ...course,
-      description:course?.description || ""
-    },
+    defaultValues:course,
     mode:'onChange'
   });
 
@@ -87,7 +82,7 @@ const ChapterForm = ({initialData:course} :ChapterFormProps) => {
             className="space-y-4 mt-4">
               <FormField
                 control={form?.control}
-                name="description"
+                name="Chapter"
                 render={({field})=>(
                   <FormItem>
                     <FormControl>
