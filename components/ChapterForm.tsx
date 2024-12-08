@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import * as z from "zod";
 import { Button } from "./ui/button";
-import { Pencil, PencilIcon } from "lucide-react";
+import { Pencil, PencilIcon, PlusCircle } from "lucide-react";
 import { useState } from "react";
 import { Form, FormControl, FormField, FormItem } from "./ui/form";
 import { Input } from "./ui/input";
@@ -13,38 +13,42 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Textarea } from "./ui/textarea";
-import { Course } from "@prisma/client";
+import { Chapter, Course } from "@prisma/client";
+import ChapterList from "./ChapterList";
 
 
 interface ChapterFormProps  {
-  initialData:Course
+  initialData:Course & {chapters:Chapter[]}
 }
 const formSchema = z.object({
-  Chapter:z.string().min(1,{
+  title:z.string().min(1,{
     message:"chapter title is required"
   })
 });
 
 const ChapterForm = ({initialData:course} :ChapterFormProps) => {
-  const [isEditing,setIsEditing] = useState(false);
+  const [isCreating,setIsCreating] = useState(false)
+  const [isUpdating,setIsUpdating] = useState(false);
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver:zodResolver(formSchema),
-    defaultValues:course,
+    defaultValues:{
+      title:""
+    },
     mode:'onChange'
   });
 
-  const toggleEditing = ()=>{
-    setIsEditing(prev=> !prev);
+  const toggleCreating = ()=>{
+    setIsCreating(prev=> !prev);
   }
 
   const {isSubmitting,isValid} = form.formState;
 
   const onSubmit = async (values:z.infer<typeof formSchema>)=>{
     try{
-      await axios.patch(`/api/courses/${course?.id}`,values);
-      toast.success("Course updated successfully");
-      toggleEditing();
+      await axios.post(`/api/courses/${course?.id}/chapters`,values);
+      toast.success("Chapter created successfully");
+      toggleCreating();
       router.refresh();
     }catch(error){
       toast.error(error instanceof Error ? error?.message : "Something went wrong");
@@ -54,54 +58,71 @@ const ChapterForm = ({initialData:course} :ChapterFormProps) => {
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Course Description
-        <Button variant="ghost" onClick={toggleEditing}>
-          {isEditing ? (
+        Course Chapter
+        <Button variant="ghost" onClick={toggleCreating}>
+          {isCreating ? (
             <>Cancel</>
           ):(
             <>
-            <Pencil className="h-4 w-4 mr-2"/>
-            Edit Description
+            <PlusCircle className="h-4 w-4 mr-2"/>
+            Add a chapter
             </>
           )}
         </Button>
       </div>
       {
-        !isEditing && (
-          <p className={cn(
-            !course?.description && "text-slate-700 italic"
-          )}>
-           {course?.description || "No Description"}
+        !isCreating && (
+          <div className={
+            cn(
+              "text-sm mt-2",
+              course?.chapters?.length ===0 && "text-slate-500 italic"
+            )
+          }>
+           {
+            course?.chapters?.length === 0 && "No Chapters"
+           }
+           {/* todo add list of chapters */}
+           <ChapterList
+              onEdit={()=>{}}
+              onReorder={()=>{}}
+              items={course?.chapters || []}
+           />
+          </div>
+        )
+      }
+      {
+        !isCreating && (
+          <p className="text-xs text-muted-foreground mt-4">
+            Drag and drop to reorder the chapters
           </p>
         )
       }
       {
-        isEditing && (
+        isCreating && (
           <Form {...form}>
             <form onSubmit={form?.handleSubmit(onSubmit)}
             className="space-y-4 mt-4">
               <FormField
                 control={form?.control}
-                name="Chapter"
+                name="title"
                 render={({field})=>(
                   <FormItem>
                     <FormControl>
-                      <Textarea
+                      <Input
                         disabled={isSubmitting}
-                        placeholder="e.g this course is about..."
+                        placeholder="e.g Introduction to the course"
                         {...field}
                       />
                     </FormControl>
                   </FormItem>
                 )}
               />
-              <div className="flex items-center gap-x-2">
-                <Button disabled={!isValid || isSubmitting} type="submit">Save</Button>
-              </div>
+                <Button disabled={!isValid || isSubmitting} type="submit">Create</Button>
             </form>
           </Form>
         )
       }
+     
     </div>
   )
 }
