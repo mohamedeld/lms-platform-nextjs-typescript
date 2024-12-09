@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import * as z from "zod";
 import { Button } from "./ui/button";
-import { Pencil, PencilIcon, PlusCircle } from "lucide-react";
+import { Loader2, Pencil, PencilIcon, PlusCircle } from "lucide-react";
 import { useState } from "react";
 import { Form, FormControl, FormField, FormItem } from "./ui/form";
 import { Input } from "./ui/input";
@@ -71,7 +71,14 @@ const ChapterForm = ({initialData:course} :ChapterFormProps) => {
     }
   }
   return (
-    <div className="mt-6 border bg-slate-100 rounded-md p-4">
+    <div className="relative mt-6 border bg-slate-100 rounded-md p-4">
+      {
+        isUpdating && (
+          <div className="absolute h-full w-full bg-slate-500/20 right-0 top-0 rounded-md flex items-center justify-center ">
+            <Loader2 className="animate-spin w-6 h-6 text-sky-700"/>
+          </div>
+        )
+      }
       <div className="font-medium flex items-center justify-between">
         Course Chapter
         <Button variant="ghost" onClick={toggleCreating}>

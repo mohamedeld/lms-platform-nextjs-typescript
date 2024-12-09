@@ -15,8 +15,9 @@ export async function PUT(req:NextRequest,{
     if(!userId){
       return new NextResponse("unauthorized",{status:401})
     }
+
     const {courseId} = params;
-    const {title} = await req.json();
+    const {list} = await req.json();
     
     const courseOwner = await db.course.findUnique({
       where:{
@@ -27,23 +28,18 @@ export async function PUT(req:NextRequest,{
     if(!courseOwner){
       return new NextResponse("Unauthorized",{status:401})
     }
-    const lastChapter =await db.chapter.findFirst({
-      where:{
-        courseId,
-      },
-      orderBy:{
-        position:'desc'
-      }
-    })
-    const newPosition = lastChapter ? lastChapter?.position + 1: 1;
-    const chapter = await db.chapter.create({
-      data:{
-        courseId,
-        title,
-        position:newPosition
-      }
-    })
-    return NextResponse.json(chapter);
+    for(let item of list){
+      await db.chapter.update({
+        where:{
+          id:item?.id
+        },
+        data:{
+          position:item?.position
+        }
+      })
+    }
+    
+    return new NextResponse("Success",{status:200});
   }catch(error){
     console.log("attachments",error);
     return new NextResponse("Something went wrong",{status:500})
