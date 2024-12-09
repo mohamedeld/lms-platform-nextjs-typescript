@@ -18,7 +18,7 @@ import ChapterList from "./ChapterList";
 
 
 interface ChapterFormProps  {
-  initialData:Course & {chapters:Chapter[]}
+  initialData:Course & {Chapter:Chapter[]}
 }
 const formSchema = z.object({
   title:z.string().min(1,{
@@ -39,7 +39,7 @@ const ChapterForm = ({initialData:course} :ChapterFormProps) => {
   });
 
   const toggleCreating = ()=>{
-    setIsCreating(prev=> !prev);
+    setIsCreating(!isCreating);
   }
 
   const {isSubmitting,isValid} = form.formState;
@@ -47,14 +47,29 @@ const ChapterForm = ({initialData:course} :ChapterFormProps) => {
   const onSubmit = async (values:z.infer<typeof formSchema>)=>{
     try{
       await axios.post(`/api/courses/${course?.id}/chapters`,values);
-      toast.success("Chapter created successfully");
       toggleCreating();
       router.refresh();
+      toast.success("Chapter created successfully");
+      form?.reset()
     }catch(error){
       toast.error(error instanceof Error ? error?.message : "Something went wrong");
     }
   }
-
+  
+  const onReorder = async (updateData:{id:string,position:number}[])=>{
+    try{
+      setIsUpdating(true);
+      await axios.put(`/api/courses/${course?.id}/chapters/reorder`,{
+        list:updateData
+      });
+      toast.success("oredered successfully");
+      router.refresh();
+    }catch(error){
+      toast.error(error instanceof Error ? error?.message : "Something went wrong");
+    }finally{
+      setIsUpdating(false);
+    }
+  }
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
@@ -70,31 +85,32 @@ const ChapterForm = ({initialData:course} :ChapterFormProps) => {
           )}
         </Button>
       </div>
-      {
-        !isCreating && (
-          <div className={
-            cn(
-              "text-sm mt-2",
-              course?.chapters?.length ===0 && "text-slate-500 italic"
-            )
-          }>
-           {
-            course?.chapters?.length === 0 && "No Chapters"
-           }
-           {/* todo add list of chapters */}
-           <ChapterList
-              onEdit={()=>{}}
-              onReorder={()=>{}}
-              items={course?.chapters || []}
-           />
-          </div>
-        )
-      }
+      
       {
         !isCreating && (
           <p className="text-xs text-muted-foreground mt-4">
             Drag and drop to reorder the chapters
           </p>
+        )
+      }
+      {
+        !isCreating && (
+          <div className={
+            cn(
+              "text-sm mt-2",
+              course?.Chapter?.length ===0 && "text-slate-500 italic"
+            )
+          }>
+           {
+            course?.Chapter?.length === 0 && "No Chapters"
+           }
+           {/* todo add list of chapters */}
+           <ChapterList
+              onEdit={()=>{}}
+              onReorder={onReorder}
+              items={course?.Chapter || []}
+           />
+          </div>
         )
       }
       {

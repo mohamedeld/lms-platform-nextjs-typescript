@@ -22,7 +22,7 @@ const CourseDetailsPage = async ({params}:CourseDetailsProps) => {
   if(!userId){
     return redirect("/")
   }
-  const {courseId} = params;
+  const {courseId} = await params;
   const course = await db.course.findUnique({
     where:{
       id:courseId,
