@@ -2,10 +2,11 @@ import ChapterForm from "@/components/ChapterForm";
 import ChapterAccessForm from "@/components/chapters/ChapterAccessForm";
 import ChapterDescription from "@/components/chapters/ChapterDescription";
 import ChapterTitle from "@/components/chapters/ChapterTitle";
+import ChapterVideoForm from "@/components/chapters/ChapterVideoForm";
 import IconBade from "@/components/IconBade";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
-import { ArrowLeft, Eye, LayoutDashboard } from "lucide-react";
+import { ArrowLeft, Eye, LayoutDashboard, Video } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -93,6 +94,18 @@ const ChapterDetailsPage = async ({params}:ChapterDetailsProps) => {
               courseId={courseId}
             />
           </div>
+        </div>
+        <div>
+          <div className="flex items-center gap-x-2">
+            <IconBade icon={Video}/>
+            <h2 className="text-2xl">
+              Add a video
+            </h2>
+          </div>
+          <ChapterVideoForm
+            initialData={chapter}
+            courseId={courseId}
+          />
         </div>
       </div>
     </div>
