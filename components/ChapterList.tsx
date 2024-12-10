@@ -210,7 +210,7 @@ const ChapterList = ({ onEdit, onReorder, items }: ChapterListProps) => {
                         {chapter.isPublished ? "Published" : "Draft"}
                       </Badge>
                       <Pencil
-                        onClick={() => onEdit(chapter.id)}
+                        onClick={() => onEdit(chapter?.id)}
                         className="w-4 h-4 cursor-pointer hover:opacity-75 transition"
                       />
                     </div>

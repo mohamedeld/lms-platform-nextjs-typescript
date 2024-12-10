@@ -70,6 +70,9 @@ const ChapterForm = ({initialData:course} :ChapterFormProps) => {
       setIsUpdating(false);
     }
   }
+  const onEdit = (id:string)=>{
+    router.push(`/teacher/courses/${course?.id}/chapters/${id}`);
+  }
   return (
     <div className="relative mt-6 border bg-slate-100 rounded-md p-4">
       {
@@ -113,7 +116,7 @@ const ChapterForm = ({initialData:course} :ChapterFormProps) => {
            }
            {/* todo add list of chapters */}
            <ChapterList
-              onEdit={()=>{}}
+              onEdit={onEdit}
               onReorder={onReorder}
               items={course?.Chapter || []}
            />
